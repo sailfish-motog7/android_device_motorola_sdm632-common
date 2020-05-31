@@ -18,3 +18,4 @@
 /dev/block/bootdevice/by-name/persist    	/mnt/vendor/persist	ext4	noatime,nosuid,nodev,barrier=1						wait
 /dev/block/bootdevice/by-name/persist2    	/mnt/product/persist	ext4	noatime,nosuid,nodev,barrier=1						wait,formattable,nofail
 #/dev/block/bootdevice/by-name/oem		/oem			ext4	ro,nosuid,nodev,context=u:object_r:oemfs:s0				wait,slotselect,verify
+/dev/block/bootdevice/by-name/boot	/boot	emms	defaults	defaults
