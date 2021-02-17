@@ -41,19 +41,24 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.audio.tunnel.encode=false \
     vendor.audio.use.sw.alac.decoder=true \
     vendor.audio.use.sw.ape.decoder=true \
-    vendor.voice.path.for.pcm.voip=true \
+    vendor.voice.path.for.pcm.voip=false \
     vendor.audio.offload.min.duration.secs=60
+
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    use.voice.path.for.pcm.voip=false
 
 # Bluetooth
 PRODUCT_PROPERTY_OVERRIDES += \
     bluetooth.hfp.client=1 \
-    ro.qualcomm.bt.hci_transport=smd
+    ro.qualcomm.bt.hci_transport=smd \
+    persist.vendor.qcom.bluetooth.enable.splita2dp=false
 
 # Camera
 PRODUCT_PROPERTY_OVERRIDES += \
     vidc.enc.dcvs.extra-buff-count=2 \
     persist.vendor.camera.preview.ubwc=0 \
-    vendor.video.disable.ubwc=1
+    vendor.video.disable.ubwc=1 \
+    vendor.vidc.disable.split.mode=1
 
 # Codec2 switch
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -68,9 +73,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.sf.hwc_set_default_colormode=true \
     debug.sf.enable_hwc_vds=1 \
     debug.sf.hw=1 \
-    debug.sf.latch_unsignaled=1 \
+    debug.sf.latch_unsignaled=0 \
     vendor.gralloc.enable_fb_ubwc=1 \
-    debug.sf.enable_gl_backpressure=1 \
+    debug.sf.disable_backpressure=1 \
     dev.pm.dyn_samplingrate=1 \
     ro.opengles.version=196610 \
     ro.qualcomm.cabl=0
@@ -82,6 +87,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # FM
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.fm.use_audio_session=true
+
+# Media
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    media.stagefright.thumbnail.prefer_hw_codecs=true
 
 # OMX
 # Rank OMX SW codecs lower than OMX HW codecs
@@ -122,21 +131,17 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.eri64_as_home=1 \
     persist.vendor.radio.data_con_rprt=1 \
     persist.vendor.radio.sib16_support=1 \
-    persist.vendor.radio.rat_on=combine \
-    persist.vendor.radio.sw_mbn_update=1 \
+    persist.vendor.radio.rat_on=other \
+    persist.vendor.radio.sw_mbn_update=0 \
     persist.vendor.radio.jbims=1 \
     persist.vendor.radio.msgtunnel.start=true \
     persist.vendor.radio.sar_sensor=1 \
-    persist.vendor.radio.apn_delay=5000 \
     persist.vendor.radio.calls.on.ims=true \
-    persist.vendor.radio.domain.ps=0 \
     persist.vendor.radio.fi_supported=1 \
     persist.vendor.cne.rat.wlan.chip.oem=WCN \
     persist.vendor.sys.cnd.iwlan=1 \
     persist.vendor.data.mode=concurrent \
     persist.data.netmgrd.qos.enable=true \
-    persist.radio.aosp_usr_pref_sel=true \
-    persist.radio.pb.min.match=7 \
     persist.radio.fi_supported=1 \
     persist.data.qmi.adb_logmask=0 \
     persist.radio.adb_log_on=0 \
@@ -146,6 +151,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.flexmap_type=none \
     persist.vendor.radio.data_con_rprt=true \
     persist.vendor.radio.add_power_save=1 \
+    persist.vendor.radio.snapshot_timer=22 \
+    persist.vendor.radio.snapshot_enabled=1 \
+    persist.vendor.radio.lte_vrte_ltd=1 \
+    persist.vendor.radio.enable_temp_dds=true \
+    persist.vendor.lte.pco_supported=true \
     persist.net.doxlat=true \
     persist.vendor.qc.sub.rdump.on=1 \
     persist.vendor.qc.sub.rdump.max=3 \
@@ -159,11 +169,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.ims.disableIMSLogs=0 \
     persist.vendor.ims.disableDebugDataPathLogs=0 \
     persist.vendor.ims.disableADBLogs=0 \
-    persist.vendor.ims.vt.enableadb=3 \
+    persist.vendor.ims.vt.enableadb=1 \
     persist.vendor.ims.disableQXDMLogs=1 \
+    persist.vendor.qti.telephony.vt_cam_interface=2 \
     ro.vendor.build.vendorprefix=/vendor
 
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    persist.radio.aosp_usr_pref_sel=true \
     persist.sys.fflag.override.settings_network_and_internet_v2=true \
     persist.vendor.cne.feature=1 \
     persist.vendor.dpm.feature=0 \
@@ -198,3 +210,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Wifi
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0
+
+# ZRAM
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.zram.mark_idle_delay_mins=60 \
+    ro.zram.first_wb_delay_mins=180 \
+    ro.zram.periodic_wb_delay_hours=24

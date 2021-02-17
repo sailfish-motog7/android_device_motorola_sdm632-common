@@ -37,17 +37,22 @@ on early-init
     symlink /data/tombstones /tombstones
 
 on init
+    setprop ro.vendor.fsg-id ${ro.boot.fsg-id}
     setprop ro.vendor.hw.dualsim ${ro.boot.dualsim}
     setprop ro.vendor.hw.device ${ro.boot.device}
     setprop ro.vendor.hw.radio ${ro.boot.radio}
     setprop ro.vendor.hw.hwrev ${ro.boot.hwrev}
-    setprop ro.carrier ${ro.boot.carrier}
+    setprop ro.vendor.hw.revision ${ro.boot.revision}
     setprop ro.vendor.carrier ${ro.boot.carrier}
+    setprop ro.vendor.boot.cid ${ro.boot.cid}
     setprop ro.vendor.boot.radio ${ro.boot.radio}
-    setprop ro.vendor.fsg-id ${ro.boot.fsg-id}
     setprop ro.vendor.boot.hwrev ${ro.boot.hwrev}
+    setprop ro.vendor.boot.powerup_reason ${ro.boot.powerup_reason}
+    setprop ro.vendor.boot.bl_state ${ro.boot.bl_state}
+    setprop ro.vendor.boot.serialno ${ro.boot.serialno}
     setprop ro.vendor.zygote ${ro.zygote}
 
+# Translate MMI property in order to keep consistent with QCOM
 on property:ro.vendor.hw.dualsim=true
     setprop persist.radio.multisim.config dsds
 
@@ -58,19 +63,38 @@ on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
 
-    mount_all /vendor/etc/fstab.qcom
+    mount_all /vendor/etc/fstab.qcom --early
     write /proc/sys/vm/swappiness 100
 
     chown root system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
     mkdir /mnt/vendor/persist/data 0700 system system
     mkdir /mnt/vendor/persist/bms 0700 root system
+    # Reloading context for NPI uses /mnt/vendor/persist
+    exec u:r:vendor_toolbox:s0 root audio bluetooth graphics media net_raw system vendor_rfs vendor_rfs_shared -- /vendor/bin/toybox_vendor find /mnt/vendor/persist -type d -exec /vendor/bin/toybox_vendor setfattr -x security.sehash {} \;
     restorecon_recursive /mnt/vendor/persist
 
     #write /sys/kernel/boot_adsp/boot 1
 
     #wait /dev/block/bootdevice/by-name/oem
     #mount ext4 /dev/block/bootdevice/by-name/oem /oem ro nosuid nodev barrier=1
+
+on late-fs
+    # Start services for bootanim
+    start servicemanager
+    start surfaceflinger
+    start bootanim
+
+    start vendor.configstore-hal
+    start vendor.gralloc-2-0
+
+    # Wait for hwservicemanager ready since fsck might be triggered in mount_all --late
+    # In such case, init won't responce the property_set from hwservicemanager and then
+    # cause services for bootanim not running.
+    wait_for_prop hwservicemanager.ready true
+
+    # mount RW partitions which need run fsck
+    mount_all /vendor/etc/fstab.qcom --late
 
 on post-fs
     start vendor.qseecomd
@@ -91,6 +115,7 @@ on post-fs-data
     mkdir /mnt/vendor/persist/data/tz 0700 system system
     mkdir /data/misc/dts 0770 media audio
 #    mkdir /data/vendor/hbtp 0750 system system
+    mkdir /data/vendor/tloc 0700 system drmrpc
 
 
 #Create folder for mm-qcamera-daemon
@@ -186,7 +211,7 @@ on boot
 # Add a cpuset for the camera daemon
 # We want all cores for camera
     mkdir /dev/cpuset/camera-daemon
-    write /dev/cpuset/camera-daemon/cpus 4-7
+    write /dev/cpuset/camera-daemon/cpus 0-3
     write /dev/cpuset/camera-daemon/mems 0
     chown cameraserver cameraserver /dev/cpuset/camera-daemon
     chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks

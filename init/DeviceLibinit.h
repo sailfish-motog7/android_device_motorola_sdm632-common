@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2015 The CyanogenMod Project
- * Copyright (c) 2017 The LineageOS Project
+ * Copyright 2020 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +14,11 @@
  * limitations under the License.
  */
 
-package org.lineageos.settings.device;
+#include <stdint.h>
 
-public interface SensorAction {
-    public void action();
-}
+#ifndef __DEVICE_LIBINIT__H__
+#define __DEVICE_LIBINIT__H__
+
+void vendor_load_device_properties();
+
+#endif /* __DEVICE_LIBINIT__H__ */

@@ -27,6 +27,7 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-fpcservice    u:object_r:hal_fingerprint_fpc_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service-ets   u:object_r:hal_fingerprint_fpc_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.light@2\.0-service\.msm8953    u:object_r:hal_light_default_exec:s0
+/(vendor|system/vendor)/bin/hw/motorola\.hardware\.audio@2\.0-service            u:object_r:hal_audio_default_exec:s0
 /(vendor|system/vendor)/bin/hw/motorola\.hardware\.audio\.adspd@1\.0-service    u:object_r:hal_audio_default_exec:s0
 /(vendor|system/vendor)/bin/init\.mmi\.(laser|usb)\.sh                          u:object_r:qti_init_shell_exec:s0
 /(vendor|system/vendor)/bin/init\.qcom\.power\.sh                               u:object_r:qti_init_shell_exec:s0
@@ -52,10 +53,17 @@
 
 /(vendor|system/vendor)/bin/wlan_carrier_bin\.sh            u:object_r:init_wifi_exec:s0
 
-/(vendor|system/vendor)/bin/charge_only_mode             u:object_r:charge_only_exec:s0
-
 /(vendor|system/vendor)/bin/capsense_reset              u:object_r:capsense_reset_exec:s0
 
-/(vendor|system/vendor)/bin/init\.oem\.panel\.sh        u:object_r:init-oem-panel-sh_exec:s0
+# NFC
+/(vendor|system/vendor)/bin/hw/vendor\.nxp\.nxpnfc@1\.0-service            u:object_r:hal_nfc_default_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.nfc@1\.2-service.st      u:object_r:hal_nfc_default_exec:s0
+/dev/st21nfc                                                               u:object_r:nfc_device:s0
 
-/data/vendor/misc/cutback(/.*)?                         u:object_r:vendor_radio_data_file:s0
+/data/vendor/misc/cutback(/.*)?                         u:object_r:cutback_data_file:s0
+/dev/socket/cutback                                     u:object_r:cutback_socket:s0
+
+# Charger
+/data/vendor/chargeonly(/.*)?                            u:object_r:chargeonly_data_file:s0
+/(mnt/vendor/persist|persist)/chargeonly(/.*)?           u:object_r:persist_chargeonly_file:s0
+/(vendor|system/vendor)/bin/charge_only_mode             u:object_r:charge_only_exec:s0

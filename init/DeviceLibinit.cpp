@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2015 The CyanogenMod Project
- * Copyright (c) 2017 The LineageOS Project
+ * Copyright 2020 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +14,8 @@
  * limitations under the License.
  */
 
-package org.lineageos.settings.device.actions;
+#ifndef TARGET_PROVIDES_DEVICE_LIBINIT
+#include <init/DeviceLibinit.h>
 
-public interface UpdatedStateNotifier {
-    public void updateState();
-}
+void vendor_load_device_properties() { }
+#endif
